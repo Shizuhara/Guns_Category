@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>guns_category</title>
+    <!--JSのSocket.IOクライアントを読み込む-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+    <!-- CSSをflaskに認識させる. -->
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}"> -->
+    <!-- jsをflaskに認識させる -->
+    <script defer src="../static/js/hoge.js"></script>
+</head>
+<!-- 
+    基本
+        名前
+        別名(あったりなかったり)
+        製造国
+        会社
+        設計者
+        弾薬
+    分類
+        分類
+        用途
+        タグ
+        バリアント
+    詳細
+        給弾方法
+        射撃方法
+        ボルト機構(あったりなかったり)
+        トリガーアクション(あったりなかったり)
+        バレル数
+        コメント
+        セリフ
+ -->
+<body>
+    <div id= "result_items">
+    {% for result_sentence in result_dict %}
+        <div id= "Basic">
+            <p>{{result_sentence.Gun_MajorName}}</p>
+            <p>{{result_sentence.Nickname_1}}</p>
+            <p>{{result_sentence.Nickname_2}}</p>
+            <p>{{result_sentence.MajorCartridge}}</p>
+            <p>{{result_sentence.Country}}</p>
+            <p>{{result_sentence.MajorManufacturer}}</p>
+            <p>{{result_sentence.Designer}}</p>
+        </div>
+        <div id= "classification">
+            <p>{{result_sentence.MajorClassification}}</p>
+            <p>{{result_sentence.MandP_MajorPerpose_1}}</p>
+            <p>{{result_sentence.MandP_MajorPerpose_2}}</p>
+            <p>{{result_sentence.Traditional_tag_1}}</p>
+            <p>{{result_sentence.Traditional_tag_2}}</p>
+        </div>
+        <div id= "detail">
+            <p>{{result_sentence.Action}}</p>
+            <p>{{result_sentence.FireSystem}}</p>
+            <p>{{result_sentence.FeedSystem_1}}</p>
+            <p>{{result_sentence.FeedSystem_2}}</p>
+            <p>{{result_sentence.BoltStyle}}</p>
+            <p>{{result_sentence.TriggerSystem}}</p>
+            <p>{{result_sentence.detail_Comment}}</p>
+        </div>
+    {% endfor %}
+    </div>
+</body>

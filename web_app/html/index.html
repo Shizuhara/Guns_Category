@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>guns_category</title>
+    <!--JSのSocket.IOクライアントを読み込む-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+    <!-- CSSをflaskに認識させる. -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <!-- jsをflaskに認識させる -->
+    <!-- defer属性はDOMを先に解析させる役割を持つ -->
+    <script defer src="../static/js/index.js"></script>
+    <!-- Material Symbols からアイコンをロード -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+
+<body>
+    <div id="main_flame">
+        <div class="seach_items">
+            <ul>
+                <div id="seach_item_list">調べたい銃のモデル項目を選択してください. </div>
+            </ul>
+            <!-- formタグ内部にある文がページ遷移への権限を持つ, name属性でサーバへ引数を渡す, submit属性持ちがフラグになって遷移する -->
+            <form action="/" method="POST">
+                <div class="Model_name">
+                    <ul>
+                        <!-- <input type= "checkbox" id= "toggle_country" onclick= "deploy_tree('Model_name_field', this.checked);"> -->
+                        モデル名の入力から調べる: <span id= "Model_name_field"><input type="text" name="Gun_MajorName"></span>
+                    </ul>
+                </div>
+                <div id= "product_country">
+                    <ul>
+                        <input type= "checkbox" id= "toggle_country" onclick= "deploy_tree('product_country_field', this.checked);">製造または設計者から選択(現存する法人はクリックすると米国法人のWebサイトを表示します)
+                    </ul>
+                    <ul>
+                        <fieldset id= "product_country_field">
+                            <li>
+                                <input type= "checkbox" name= "Country" value= "アメリカ" onclick= "simple_tree('america', this.checked);">🇺🇸アメリカ
+                                <ul>
+                                    <li><a href= "https://armalite.com/" target= "_blank"><input type= "checkbox" name= "MajorManufacturer" value= "アーマライト" class= "america">アーマライト</a></li>
+                                    <li><a href= "https://www.colt.com/" target= "_blank"><input type= "checkbox" name= "MajorManufacturer" value= "コルト" class= "america">コルト</a></li>
+                                    <li><a href= "https://www.smith-wesson.com/" target= "_blank"><input type= "checkbox" name= "MajorManufacturer" value= "スミス$ウェッソン" class= "america">スミス$ウェッソン</a></li>
+                                    <li><a href= "https://www.winchesterguns.com/" target= "_blank"><input type= "checkbox" name= "MajorManufacturer" value= "ウィンチェスター" class= "america">ウィンチェスター</a></li>
+                                    <li><a href= "https://www.remington.com/" target= "_blank"><input type= "checkbox" name= "MajorManufacturer" value= "レミントン" class= "america">レミントン</a></li>
+                                    <li><a href= "https://www.keltecweapons.com/" target= "_blank"><input type= "checkbox" name= "MajorManufacturer" value= "ケルテック" class= "america">ケルテック</a></li>
+                                    <li><a href= "https://barrett.net/" target= "_blank"><input type= "checkbox" name= "MajorManufacturer" value= "バレット" class= "america">バレット</a></li>
+                                    <li><a href= "https://www.mcmillanfirearms.com/" target= "_blank"><input type= "checkbox" name= "MajorManufacturer" value= "マクミラン" class= "america">マクミラン</a></li>
+                                    <li><a href= "https://magpul.com/" target= "_blank"><input type= "checkbox" name= "MajorManufacturer" value= "マグプル" class= "america">マグプル</a></li>
+                                    <li><span><input type= "checkbox" name= "Designer" value= "ジョン・ブローニング" class= "america">ジョン・ブローニング</span></li>
+                                    <li><span><input type= "checkbox" name= "Designer" value= "ユージン・ストーナー" class= "america">ユージン・ストーナー<span></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <input type= "checkbox" name= "Country" onclick= "simple_tree('russia', this.checked);">ロシア
+                                <ul>    
+                                    <li><span><input type= "checkbox" name= "Country" value= "ロシア" class= "russia">🇷🇺ロシア連邦</span></li>
+                                    <li><span><input type= "checkbox" name= "Country" value= "ソ連" class= "russia">ソビエト連邦</span></li>
+                                    <li><span><input type= "checkbox" name= "Country" value= "ロシア帝国" class= "russia">ロシア帝国</span></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <input type= "checkbox" name= "Country" onclick= "simple_tree('germany', this.checked);">ドイツ
+                                <ul>
+                                    <li><input type= "checkbox" name= "Country" value= "ドイツ" class= "germany">🇩🇪ドイツ(再統一以降)</li>
+                                    <li><input type= "checkbox" name= "Country" value= "西ドイツ" class= "germany">西ドイツ</li>
+                                    <li><input type= "checkbox" name= "Country" value= "ナチスドイツ" class= "germany">ドイツ(ナチ党政権下)</li>
+                                    <li><input type= "checkbox" name= "Country" value= "ヴァイマル共和国" class= "germany">ドイツ(ヴァイマル共和政下)</li>
+                                    <li><input type= "checkbox" name= "Country" value= "ドイツ帝国" class= "germany">ドイツ帝国</li>
+                                </ul>
+                            </li>
+                            <li><input type= "checkbox" name= "Country" value= "ベルギー">🇧🇪ベルギー</li>
+                            <li><input type= "checkbox" name= "Country" value= "オーストリア" class= "dual_monarchy" onclick= "simple_tree('austria', this.checked);">🇦🇹オーストリア
+                                <ul>
+                                    <li><input type= "checkbox" name= "Country" value= "二重帝国" class= "austria">オーストリア=ハンガリー二重帝国</li>
+                                    <li><a href= "https://eu.glock.com/en" target= "_blank"><input type= "checkbox" name= "MajorManufacturer" value= "グロック" class= "austria">グロック</a></li>
+                                    <li><input type= "checkbox" name= "Designer" value= "ガストン・グロック" class= "austria">ガストン・グロック</li>
+                                </ul>
+                            </li>
+                        </fieldset>
+                    </ul>
+                </div>
+                <div id= "Comb">
+                    <ul>
+                        <input type= "checkbox" id= "toggle_comb" onclick= "deploy_tree('comb_field', this.checked);">組み合わせて調べる(後述の要素を自動選択します)
+                    </ul>
+                    <ul>
+                        <fieldset id= "comb_field">
+                            <!-- class の引数を複数用意する場合は半角スペースのみ -->
+                            <input type= "checkbox" name= "Comb" value= "automatic_rifle" onclick= "comb_tree('automatic_rifle', this.checked);">自動小銃(オートマチックライフル)
+                            <input type= "checkbox" name= "Comb" value= "semiautomatic_rifle" onclick= "comb_tree('semiautomatic_rifle', this.checked);">半自動小銃(セミオートマチックライフル)
+                            <input type= "checkbox" name= "Comb" value= "pumpaction_rifle" onclick= "comb_tree('pumpaction_rifle', this.checked);">ポンプアクションライフル
+                            <input type= "checkbox" name= "Comb" value= "revolver" onclick= "comb_tree('revolver', this.checked);">リボルバー(回転式拳銃)
+                            <input type= "checkbox" name= "Comb" value= "single_action_army" onclick= "comb_tree('single_action_army', this.checked);">シングルアクションアーミー(SAA, ピースメーカー)
+                            <input type= "checkbox" name= "Comb" value= "revolving_rifle" onclick= "comb_tree('revolving_rifle', this.checked);">リボルビングライフル
+                            <input type= "checkbox" name= "Comb" value= "revolving_shotgun" onclick= "comb_tree('revolving_shotgun', this.checked);">リボルビングショットガン
+                            <input type= "checkbox" name= "Comb" value= "doublebarreled_shotgun" onclick= "comb_tree('doublebarreled_shotgun', this.checked);">二連式散弾銃
+                            <input type= "checkbox" name= "Comb" value= "leveraction_shotgun" onclick= "comb_tree('leveraction_shotgun', this.checked);">レバーアクションショットガン
+                            <input type= "checkbox" name= "Comb" value= "derringer" onclick= "comb_tree('derringer', this.checked);">デリンジャー
+                            <input type= "checkbox" name= "Comb" value= "sniper_grenadelancher" onclick= "comb_tree('sniper_grenadelancher', this.checked);">スナイパーグレネードランチャー
+                        </fieldset>
+                    </ul>
+                </div>
+                <div id= "MajorClassification">
+                    <ul>
+                        <input type= "checkbox" id= "toggle_MajorClassification" onclick= "deploy_tree('MajorClassification_field', this.checked);">銃の分類から調べる
+                    </ul>
+                    <ul>
+                        <fieldset id= "MajorClassification_field">
+                            <input type= "checkbox" name= "MajorClassification" value= "小銃" id= "expand-toggle" class= "automatic_rifle semiautomatic_rifle pumpaction_rifle revolving_rifle">小銃(ライフル銃)
+                            <input type= "checkbox" name= "MajorClassification" value= "拳銃" class= "revolver derringer single_action_army">拳銃(ハンドガン, ピストル)
+                            <input type= "checkbox" name= "MajorClassification" value= "散弾銃" class="revolving_shotgun doublebarreled_shotgun leveraction_shotgun">散弾銃(ショットガン)
+                            <input type= "checkbox" name= "MajorClassification" value= "機関銃" onclick= "simple_tree('machine_gun', this.checked);">機関銃(マシンガン)
+                            <input type= "checkbox" name= "MajorClassification" value= "短機関銃">短機関銃(サブマシンガン)
+                            <input type= "checkbox" name= "MajorClassification" value= "グレネードランチャー" class= "sniper_grenadelancher">グレネードランチャー(擲弾発射器)
+                            <input type= "checkbox" name= "MajorClassification" value= "ロケットランチャー">ロケットランチャー(対戦車擲弾発射器, 無反動砲)
+                        </fieldset>
+                    </ul>
+                </div>
+                <div id= "MandP_MajorPerpose">
+                    <ul>
+                        <input type= "checkbox" id= "toggle_MandP_MajorPerpose" onclick= "deploy_tree('MandP_MajorPerpose_field', this.checked);">軍/法執行機関の使用区分(設計者が想定する用途)で調べる
+                    </ul>
+                    <ul>
+                        <fieldset id= "MandP_MajorPerpose_field">
+                            <input type= "checkbox" name= "MandP_MajorPerpose" value= "歩兵銃">歩兵銃(主力小銃, サービスライフル)
+                            <input type= "checkbox" name= "MandP_MajorPerpose" value= "マークスマンライフル">マークスマンライフル(DMR)
+                            <input type= "checkbox" name= "MandP_MajorPerpose" value= "狙撃銃" class= "sniper_grenadelancher">狙撃銃(スナイパーライフル)
+                                <input type= "checkbox" name= "MandP_MajorPerpose" value= "軽機関銃" class= "machine_gun">軽機関銃(LMG/ SAW, LSW, IARを含む)
+                                <input type= "checkbox" name= "MandP_MajorPerpose" value= "汎用機関銃" class= "machine_gun">汎用機関銃(GPMG, MMG)
+                            <input type= "checkbox" name= "MandP_MajorPerpose" value= "カービン" onclick= "simple_tree('carbine', this.checked);">カービン(騎銃)
+                                <input type= "checkbox" name= "MandP_MajorPerpose" value= "ライフルカービン" class= "carbine">カービン(肩撃ち銃のみを指す)
+                                <input type= "checkbox" name= "MandP_MajorPerpose" value= "ピストルカービン" class= "carbine">ピストルカービン(PCC)
+                            <input type= "checkbox" name= "MandP_MajorPerpose" value= "自衛用火器">自衛用火器(PDW)
+                            <input type= "checkbox" name= "MandP_MajorPerpose" value= "法執行機関向け">法執行機関向け
+                            <input type= "checkbox" name= "MandP_MajorPerpose" value= "その他">その他
+                        </fieldset>
+                    </ul>
+                </div>
+                <div id= "Traditional_tag">
+                    <ul>
+                        <input type= "checkbox" id= "toggle_Traditional_tag" onclick= "deploy_tree('Traditional_tag_field', this.checked);">慣習的に分類される名称, 一部にのみ使われる名称をタグとして調べる
+                    </ul>
+                    <ul>
+                        <fieldset id= "Traditional_tag_field">
+                            <input type= "checkbox" name= "Traditional_tag" value= "アサルトライフル">アサルトライフル(突撃銃)
+                            <input type= "checkbox" name= "Traditional_tag" value= "バトルライフル">バトルライフル
+                            <input type= "checkbox" name= "Traditional_tag" value= "マシンピストル">マシンピストル(機関拳銃)
+                            <input type= "checkbox" name= "Traditional_tag" value= "対物ライフル" class= "sniper_grenadelancher">対物ライフル(対戦車ライフル)
+                            <input type= "checkbox" name= "Traditional_tag" value= "ブルバップ方式">ブルバップ方式
+                            <input type= "checkbox" name= "Traditional_tag" value= "中折れ式">中折れ式(トップブレイク)
+                            <input type= "checkbox" name= "Traditional_tag" value= "サプレッサー標準搭載">サプレッサー標準搭載
+                            <input type= "checkbox" name= "Traditional_tag" value= "少数生産">少数生産
+                            <input type= "checkbox" name= "Traditional_tag" value= "試作品のみまたはペーパープランのみ">試作品のみまたはペーパープランのみ
+                            <input type= "checkbox" name= "Traditional_tag" value= "半自動コンパクトカービン">半自動コンパクトカービン(ARピストル, AKピストル)
+                            <input type= "checkbox" name= "Traditional_tag" value= "上からマガジン給弾">上からマガジン給弾
+                            <input type= "checkbox" name= "Traditional_tag" value= "横からマガジン給弾">横からマガジン給弾
+                            <input type= "checkbox" name= "Traditional_tag" value= "コンビネーションガン">コンビネーションガン
+                        </fieldset>
+                    </ul>
+                </div>
+                <div id= "Variant">
+                    <ul>
+                        <input type= "checkbox" id= "toggle_Variant" onclick= "deploy_tree('Variant_field', this.checked);">銃の派生から調べる
+                    </ul>
+                    <ul>
+                        <fieldset id= "Variant_field">
+                            <input type= "checkbox" name= "Variant" value= "AR-15系" onclick= "simple_tree('AR-15', this.checked);">AR-15系(ARスタイルを含む)
+                                <input type= "checkbox" name= "Variant" value= "M16系" class= "AR-15">M16系
+                                <input type= "checkbox" name= "Variant" value= "M4系" class= "AR-15">M4系
+                                <input type= "checkbox" name= "Variant" value= "SR-25系" class= "AR-15">SR-25系
+                            <input type= "checkbox" name= "Variant" value= "AK-47系" onclick= "simple_tree('AK-47', this.checked);">AK-47系(AKスタイルを含む)
+                                <input type= "checkbox" name= "Variant" value= "AK-74系" class= "AK-74">AK-74系
+                            <input type= "checkbox" name= "Variant" value= "G3系" onclick= "simple_tree('G3', this.checked);">G3系
+                                <input type= "checkbox" name= "Variant" value= "HK33系" class= "G3">HK33系
+                                <input type= "checkbox" name= "Variant" value= "MP5系" class= "G3">MP5系
+                            <input type= "checkbox" name= "Variant" value= "FAL系" onclick= "simple_tree('FAL', this.checked);">FAL系
+                                <input type= "checkbox" name= "Variant" value= "FNC系" class= "FAL">FNC系
+                            <input type= "checkbox" name= "Variant" value= "Glock17系">Glock17系
+                        </fieldset>
+                    </ul>
+                </div>
+                <div id= "Action">
+                    <ul>
+                        <input type= "checkbox" id= "toggle_Action" onclick= "deploy_tree('Action_field', this.checked);">装填方法(アクション)から調べる
+                    </ul>
+                    <ul>
+                        <fieldset id= "Action_field">
+                            <input type= "checkbox" name= "Action" value= "オートマチック" class= "automatic_rifle semiautomatic_rifle" onclick= "simple_tree('automatic', this.checked);">オートマチック(自動式)
+                                <input type= "checkbox" name= "Action" value= "DI" class= "automatic automatic_rifle semiautomatic_rifle">DI(ダイレクトガス・インピージメント)
+                                <input type= "checkbox" name= "Action" value= "ロングストロークピストン" class= "automatic automatic_rifle semiautomatic_rifle">ロングストロークピストン
+                                <input type= "checkbox" name= "Action" value= "ショートストロークピストン" class= "automatic automatic_rifle semiautomatic_rifle">ショートストロークピストン
+                                <input type= "checkbox" name= "Action" value= "遅延式ブローバック" class= "automatic automatic_rifle semiautomatic_rifle">遅延式ブローバック
+                                <input type= "checkbox" name= "Action" value= "シンプルブローバック" class= "automatic automatic_rifle semiautomatic_rifle">シンプルブローバック
+                                <input type= "checkbox" name= "Action" value= "ショートリコイル" class= "automatic automatic_rifle semiautomatic_rifle">ショートリコイル
+                                <input type= "checkbox" name= "Action" value= "トグルアクション" class= "automatic automatic_rifle semiautomatic_rifle">トグルアクション
+                                <input type= "checkbox" name= "Action" value= "電動モーター" class= "automatic">電動モーター
+                            <input type= "checkbox" name= "Action" value= "マニュアルリピーター" onclick= "simple_tree('manual_operation', this.checked);">マニュアルリピーター(手動連発方式)
+                                <input type= "checkbox" name= "Action" value= "ボルトアクション" class= "manual_operation">ボルトアクション(直動鎖閂式)
+                                <input type= "checkbox" name= "Action" value= "レバーアクション" class= "manual_operation leveraction_shotgun">レバーアクション(底碪式)
+                                <input type= "checkbox" name= "Action" value= "ポンプアクション" class= "manual_operation pumpaction_rifle">ポンプアクション(スライド式)
+                            <input type= "checkbox" name= "Action" value= "マズルローダー" class= "derringer">マズルローダー
+                        </fieldset>
+                    </ul>
+                </div>
+                <div id= "MajorCartridge">
+                    <ul>
+                        <input type= "checkbox" id= "toggle_MajorCartridge" onclick= "deploy_tree('MajorCartridge_field', this.checked);">主な使用弾薬から調べる
+                    </ul>
+                    <ul>
+                        <fieldset id= "MajorCartridge_field">
+                            <input type= "checkbox" name= "rifle_bullet" value= "ライフル弾" onclick= "simple_tree('rifle_bullet', this.checked);">ライフル弾
+                                <input type= "checkbox" name= "West_side" value= "西側規格" onclick= "simple_tree('West_side', this.checked);">西側規格(NATO弾)
+                                    <input type= "checkbox" name= "MajorCartridge" value= "5.56x45mm" class= "rifle_bullet West_side">5.56x45mmNATO弾
+                                    <input type= "checkbox" name= "MajorCartridge" value= "7.62x51mm" class= "rifle_bullet West_side">7.62x51mmNATO弾(.308ウィンチェスター弾)
+                                <input type= "checkbox" name= "East_side" value= "東側規格" onclick= "simple_tree('East_side', this.checked);">東側規格
+                                    <input type= "checkbox" name= "MajorCartridge" value= "7.62x54mm" class= "rifle_bullet East_side">7.62x54mmR弾
+                                    <input type= "checkbox" name= "MajorCartridge" value= "7.62x39mm" class= "rifle_bullet East_side">7.62x39mm弾
+                            <input type= "checkbox" name= "pistol_bullet" value= "拳銃弾" onclick= "simple_tree('pistol_bullet', this.checked);">拳銃弾
+                                <input type= "checkbox" name= "MajorCartridge" value= "9x19mm" class= "pistol_bullet">9x19mmパラベラム弾(ルガー弾)
+                                <input type= "checkbox" name= "MajorCartridge" value= "11.43x23mm" class= "pistol_bullet">11.43x23mm弾(.45ACP弾)
+                            <input type= "checkbox" name= "shot_shell" value= "散弾実包" onclick= "simple_tree('shot_shell', this.checked);">散弾実包(ショットシェル)
+                                <input type= "checkbox" name= "MajorCartridge" value= "12ゲージ" class= "shot_shell">12ゲージ(12番径)
+                                <input type= "checkbox" name= "MajorCartridge" value= "410番" class= "shot_shell">410番
+                        </fieldset>
+                    </ul>
+                </div>
+                <div id= "Magazine">
+                    <ul>
+                        <input type= "checkbox" id= "toggle_Magazine" onclick= "deploy_tree('Magazine_field', this.checked);">給弾方法から調べる
+                    </ul>
+                    <ul>
+                        <fieldset id= "Magazine_field">
+                            <input type= "checkbox" name= "Magazine" value= "着脱式マガジン" onclick= "simple_tree('detachable_mag', this.checked);">着脱式マガジン(デタッチャブルマガジン)
+                                <input type= "checkbox" name= "Magazine" value= "箱型弾倉" class= "detachable_mag">箱型弾倉(ドラムマガジンを含む)
+                                <input type= "checkbox" name= "Magazine" value= "ヘリカルフィードマガジン" class= "detachable_mag">ヘリカルフィードマガジン
+                                <input type= "checkbox" name= "Magazine" value= "パンマガジン" class= "detachable_mag">パンマガジン
+                            <input type= "checkbox" name= "Magazine" value= "弾帯">弾帯(保弾板を含む)
+                            <input type= "checkbox" name= "Magazine" value= "クリップ">クリップ(挿弾子/ 固定式弾倉への給弾を指す)
+                            <input type= "checkbox" name= "Magazine" value= "シリンダー" class="revolver revolving_rifle revolving_shotgun single_action_army">シリンダー(回転弾倉)
+                            <input type= "checkbox" name= "Magazine" value= "チューブマガジン">チューブマガジン
+                            <input type= "checkbox" name= "Magazine" value= "なし", class= "derringer">弾倉の概念がない
+                        </fieldset>
+                    </ul>
+                </div>
+                <div id= "FireSystem">
+                    <ul>
+                        <input type= "checkbox" id= "toggle_FireSystem" onclick= "deploy_tree('FireSystem_field', this.checked);">射撃方法から調べる
+                    </ul>
+                    <ul>
+                        <fieldset id= "FireSystem_field">
+                            <input type= "checkbox" name= "FireSystem" value= "セレクティブファイア" onclick= "simple_tree('selective_fire', this.checked);">セレクティブファイア(選択射撃)
+                                <input type= "checkbox" name= "FireSystem" value= "セミ/フル" class= "selective_fire automatic_rifle">セミ/フルの選択射撃
+                                <input type= "checkbox" name= "FireSystem" value= "セミ/フル/バースト" class= "selective_fire automatic_rifle">セミ/フル/バーストの選択射撃
+                                <input type= "checkbox" name= "FireSystem" value= "セミ/バースト" class= "selective_fire automatic_rifle">セミ/バーストの選択射撃
+                                <input type= "checkbox" name= "FireSystem" value= "セミ/手動" class= "selective_fire">セミ/手動の選択射撃
+                            <input type= "checkbox" name= "FireSystem" value= "セミオート" class= "semiautomatic_rifle">セミオートのみ
+                            <input type= "checkbox" name= "FireSystem" value= "フルオート">フルオートのみ
+                            <input type= "checkbox" name= "FireSystem" value= "手動" class= "pumpaction_rifle, leveraction_shotgun">手動(マニュアルリピーター, マズルローダーを指す)
+                        </fieldset>
+                    </ul>
+                </div>
+                <div id= "BoltStyle">
+                    <ul>
+                        <input type= "checkbox" id= "toggle_BoltStyle" onclick= "deploy_tree('BoltStyle_field', this.checked);">ボルト機構から調べる
+                    </ul>
+                    <ul>
+                        <fieldset id= "BoltStyle_field">
+                            <input type= "checkbox" name= "TriggerSystem" value= "クローズドボルト(+1)">クローズドボルト(タクティカルリロード時に装弾数 +1)
+                            <input type= "checkbox" name= "TriggerSystem" value= "クローズドボルト">クローズドボルト(エンプティリロード/タクティカルリロード共に装弾数 +0)
+                            <input type= "checkbox" name= "TriggerSystem" value= "オープンボルト">オープンボルト(エンプティリロード/タクティカルリロード共に装弾数 +0)
+                        </fieldset>
+                    </ul>
+                </div>
+                <div id= "TriggerSystem">
+                    <ul>
+                        <input type= "checkbox" id= "toggle_TriggerSystem" onclick= "deploy_tree('TriggerSystem_field', this.checked);">トリガーアクションから調べる
+                    </ul>
+                    <ul>
+                        <fieldset id= "TriggerSystem_field">
+                            <input type= "checkbox" name= "TriggerSystem" value= "シングルアクション" class= "revolver single_action_army">シングルアクションのみ
+                            <input type= "checkbox" name= "TriggerSystem" value= "ダブルアクション" class= "revolver">ダブルアクションのみ(DAO)
+                            <input type= "checkbox" name= "TriggerSystem" value= "DA/SA" class= "revolver">ダブルアクション/シングルアクション(DA/SA)
+                            <input type= "checkbox" name= "TriggerSystem" value= "ストライカー方式">ストライカー方式
+                        </fieldset>
+                    </ul>
+                </div>
+                <div id= "Barrels">
+                    <ul>
+                        <input type= "checkbox" id= "toggle_Barrels" onclick= "deploy_tree('Barrels_field', this.checked);">銃身の本数から調べる
+                    </ul>
+                    <ul>
+                        <fieldset id= "Barrels_field">
+                            <input type= "checkbox" name= "Barrels" value= "1">1本
+                            <input type= "checkbox" name= "Barrels" value= "多連装" onclick= "simple_tree('multi_barrels', this.checked);">多連装
+                                <input type= "checkbox" name= "Barrels" value= "2" class= "multi_barrels doublebarreled_shotgun">2本(ダブルバレル)
+                                <input type= "checkbox" name= "Barrels" value= "3" class= "multi_barrels">3本
+                                <input type= "checkbox" name= "Barrels" value= "6" class= "multi_barrels">6本
+                        </fieldset>
+                    </ul>
+                </div>
+                <div class = "seach_start">
+                    <ul>
+                        <input type="submit" name="seach_start_btn" value="検索開始">
+                    </ul>
+                </div>
+            </form>
+        </div>
+        <div id= "result_items">
+            <ul>
+                <div id= "result_txt">検索結果: <span id= "result_numbers">{{gun_len}}件</span></div>
+            </ul>
+            <ul>
+                <div id= "example_txt">以下からモデルを選択してください. </div>
+            </ul>
+        </div>
+        <!-- <form action="/result" method="GET">
+            <div class = "hoge">
+                <input type="submit" name="hoge_btn" value="ほげ">
+            </div>
+        </form> -->
+    </div>
+    <div id= "result_table">
+        <ul>
+            <table>
+                <tr>
+                    <th>モデルの名称</th>
+                    <th>製造国</th>
+                    <th>簡易コメント</th>
+                </tr>
+            {% for gun_sentence in gun_dict %}
+                <tr>
+                    {% for simple_word in simple_list %}
+                        <!-- 辞書のキーを変数にしたい場合はドットではなく大括弧 -->
+                        <!-- result.htmlへ接続 -->
+                        <!-- url_forにカンマで第二引数を用意することでflaskのルーティングを動的にする -->
+                        <td><a href= "{{ url_for('result', guns_id = gun_sentence.ID) }}" style= "text-decoration:none;" target="_blank">{{gun_sentence[simple_word]}}</a></td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            </table>
+        </ul>
+    </div>
+    <!-- 外部のjsファイルはその位置より上のみのHTMLを読むのでbodyダグ終了直前に置くこと. ただしダサい -->
+<body>
