@@ -3,7 +3,7 @@ import json
 import time
 # Flaskとrender_templateをインポート
 from flask import Flask, render_template, request, jsonify
-from flask_socketio import SocketIO, emit
+from waitress import serve
 # 半角カナを全角へ全角英字を半角英字へ
 import unicodedata
 
@@ -12,7 +12,6 @@ import unicodedata
 app = Flask(__name__, template_folder= "html")
 # 文字化け防止
 app.config["JSON_AS_ASCII"] = False
-sio = SocketIO(app)
 
 # 辞書型へ変換する関数
 def dict_factory(cursor, row):
@@ -224,7 +223,7 @@ def result(guns_id):
 # if __name__ == "__main__":
 #     app.run(debug=True, host='0.0.0.0', port = 80)
 if __name__ == "__main__":
-    app.run(debug= True, host= '0.0.0.0', port= 5000)
+    serve.run(debug= True, host= '0.0.0.0', port= 8000)
 
 # sudo lsof -i :ポート番号
 # sudo kill -9 PID
